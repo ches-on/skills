@@ -1,1 +1,1 @@
-web: gunicorn skills.wsgi
+web: gunicorn config.wsgi
