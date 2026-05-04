@@ -59,7 +59,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-MySQL Database Configuration (XAMPP Compatible)
+# MySQL Database Configuration (XAMPP Compatible)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
