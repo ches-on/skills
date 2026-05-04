@@ -59,36 +59,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# MySQL Database Configuration (XAMPP Compatible)
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'skillmarket_db',
-#         'USER': 'root',
-#         'PASSWORD': '',
-#         'HOST': '127.0.0.1',
-#         'PORT': '3306',
-#     }
-# }
-
-
-
-import os
-import dj_database_url
-
-if os.getenv("RENDER"):
-    # 🔥 Production (Render)
-    DATABASES = {
-        'default': dj_database_url.config(default='')
+MySQL Database Configuration (XAMPP Compatible)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'skillmarket_db',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
-else:
-    # 💻 Local development (NO shell needed)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
+
+
+
+
     
     
 # Password validation
