@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ listing.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            {% if listing.image %}
+                <img src="{{ listing.image.url }}" class="card-img-top" alt="{{ listing.title }}" style="max-height: 400px; object-fit: cover;">
+            {% else %}
+                <img src="https://placehold.co/800x400/e9ecef/6c757d?text=No+Image" class="card-img-top" alt="No Image" style="max-height: 400px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h2 class="card-title">{{ listing.title }}</h2>
+                        <p class="text-muted">{{ listing.skill_name }}</p>
+                    </div>
+                    {% if is_owner %}
+                    <div>
+                        <a href="{% url 'edit_listing' listing.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'delete_listing' listing.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if listing.category == 'housekeeping' %}
+                    <span class="badge bg-primary mb-3">{{ listing.get_category_display }}</span>
+                {% elif listing.category == 'salon' %}
+                    <span class="badge bg-primary mb-3">{{ listing.get_category_display }}</span>
+                {% elif listing.category == 'sales' %}
+                    <span class="badge bg-success mb-3">{{ listing.get_category_display }}</span>
+                {% elif listing.category == 'tutoring' %}
+                    <span class="badge bg-warning mb-3">{{ listing.get_category_display }}</span>
+                {% elif listing.category == 'repair' %}
+                    <span class="badge bg-dark mb-3">{{ listing.get_category_display }}</span>
+                {% elif listing.category == 'fitness' %}
+                    <span class="badge bg-danger mb-3">{{ listing.get_category_display }}</span>
+                {% elif listing.category == 'pet_care' %}
+                    <span class="badge bg-secondary mb-3">{{ listing.get_category_display }}</span>
+                {% elif listing.category == 'events' %}
+                    <span class="badge bg-light text-dark mb-3">{{ listing.get_category_display }}</span>
+                {% elif listing.category == 'delivery' %}
+                    <span class="badge bg-primary mb-3">{{ listing.get_category_display }}</span>
+                {% elif listing.category == 'cooking' %}
+                    <span class="badge bg-success mb-3">{{ listing.get_category_display }}</span>
+                {% elif listing.category == 'photography' %}
+                    <span class="badge bg-primary mb-3">{{ listing.get_category_display }}</span>
+                {% else %}
+                    <span class="badge bg-secondary mb-3">{{ listing.get_category_display }}</span>
+                {% endif %}
+                <span class="badge bg-light text-dark mb-3">{{ listing.skill_name }}</span>
+                <p class="card-text">{{ listing.description }}</p>
+                <p class="text-muted">
+                    <small>Posted on {{ listing.created_at|date:"F d, Y" }} by {{ listing.created_by.username }}</small>
+                </p>
+                <p class="text-muted">
+                    <small>Location: {{ listing.location }}</small>
+                </p>
+            </div>
+        </div>
+        <a href="{% url 'home' %}" class="btn btn-outline-primary mt-3">Back to Listings</a>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                Contact Provider
+            </div>
+            <div class="card-body">
+                <p><strong>Provider:</strong> {{ listing.created_by.username }}</p>
+                {% if show_contact %}
+                    <p><strong>Contact:</strong> {{ listing.contact }}</p>
+                    <p><strong>Location:</strong> {{ listing.location }}</p>
+                    <a href="tel:{{ listing.contact }}" class="btn btn-success w-100 mb-2">Call Provider</a>
+                    <a href="?show_contact=0" class="btn btn-outline-secondary w-100">Hide Contact</a>
+                {% else %}
+                    <p class="text-muted">Contact information is hidden</p>
+                    <a href="?show_contact=1" class="btn btn-primary w-100">Show Contact</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

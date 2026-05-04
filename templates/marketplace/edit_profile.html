@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1 class="mb-4">Edit Profile</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="id_role" class="form-label">Role</label>
+                {{ form.role }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_phone" class="form-label">Phone</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_location" class="form-label">Location</label>
+                {{ form.location }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_profile_image" class="form-label">Profile Image</label>
+                {{ form.profile_image }}
+                {% if form.profile_image.value %}
+                    <p class="form-text">Current: {{ form.profile_image.value }}</p>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+        </form>
+
+        <a href="{% url 'profile' %}" class="btn btn-outline-secondary w-100 mt-3">Cancel</a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(function(input) {
+        if (input.type === 'file') {
+            input.classList.add('form-control');
+        } else if (input.tagName === 'SELECT') {
+            input.classList.add('form-select');
+        } else {
+            input.classList.add('form-control');
+        }
+    });
+});
+</script>
+{% endblock %}

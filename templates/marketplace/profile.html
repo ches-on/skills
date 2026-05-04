@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="mb-4">My Profile</h1>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3">
+                        {% if profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="Profile" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            <img src="https://placehold.co/150x150/e9ecef/6c757d?text={{ profile.user.username|first|upper }}" alt="Default" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <h3>{{ profile.user.username }}</h3>
+                        <span class="badge bg-primary">{{ profile.get_role_display }}</span>
+                        <hr>
+                        <p><strong>Email:</strong> {{ profile.user.email }}</p>
+                        <p><strong>Phone:</strong> {{ profile.phone|default:"Not set" }}</p>
+                        <p><strong>Location:</strong> {{ profile.location|default:"Not set" }}</p>
+                        <p><strong>Member since:</strong> {{ profile.user.date_joined|date:"F d, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

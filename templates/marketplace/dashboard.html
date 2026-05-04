@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>My Dashboard</h1>
+    {% if user.profile.is_provider %}
+    <a href="{% url 'create_listing' %}" class="btn btn-primary">Create New Listing</a>
+    {% endif %}
+</div>
+
+{% if user.profile.is_provider %}
+    <h3>My Listings</h3>
+    {% if listings %}
+        <div class="row">
+            {% for listing in listings %}
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h5 class="card-title">{{ listing.title }}</h5>
+                                <p class="text-muted small">{{ listing.skill_name }}</p>
+                            </div>
+                            {% if listing.category == 'housekeeping' %}
+                                <span class="badge bg-primary">{{ listing.get_category_display }}</span>
+                            {% elif listing.category == 'salon' %}
+                                <span class="badge bg-primary">{{ listing.get_category_display }}</span>
+                            {% elif listing.category == 'sales' %}
+                                <span class="badge bg-success">{{ listing.get_category_display }}</span>
+                            {% elif listing.category == 'tutoring' %}
+                                <span class="badge bg-warning">{{ listing.get_category_display }}</span>
+                            {% elif listing.category == 'repair' %}
+                                <span class="badge bg-dark">{{ listing.get_category_display }}</span>
+                            {% elif listing.category == 'fitness' %}
+                                <span class="badge bg-danger">{{ listing.get_category_display }}</span>
+                            {% elif listing.category == 'pet_care' %}
+                                <span class="badge bg-secondary">{{ listing.get_category_display }}</span>
+                            {% elif listing.category == 'events' %}
+                                <span class="badge bg-light text-dark">{{ listing.get_category_display }}</span>
+                            {% elif listing.category == 'delivery' %}
+                                <span class="badge bg-primary">{{ listing.get_category_display }}</span>
+                            {% elif listing.category == 'cooking' %}
+                                <span class="badge bg-success">{{ listing.get_category_display }}</span>
+                            {% elif listing.category == 'photography' %}
+                                <span class="badge bg-primary">{{ listing.get_category_display }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ listing.get_category_display }}</span>
+                            {% endif %}
+                        </div>
+                        <p class="card-text text-muted small mt-2">{{ listing.location }}</p>
+                        <p class="card-text">{{ listing.description|truncatewords:20 }}</p>
+                        <div class="btn-group">
+                            <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                            <a href="{% url 'edit_listing' listing.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <a href="{% url 'delete_listing' listing.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            You haven't created any listings yet.
+            <a href="{% url 'create_listing' %}" class="alert-link">Create one now!</a>
+        </div>
+    {% endif %}
+{% else %}
+    <div class="alert alert-warning">
+        You are registered as a Customer. Only Providers can create listings.
+        <a href="{% url 'edit_profile' %}" class="alert-link">Update your profile to become a Provider.</a>
+    </div>
+{% endif %}
+
+{% endblock %}
