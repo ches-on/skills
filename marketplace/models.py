@@ -128,6 +128,22 @@ class Product(models.Model):
     def in_stock(self):
         return self.stock > 0
 
+    @property
+    def primary_image(self):
+        """Return the primary image, or the first available image"""
+        primary = self.images.filter(is_primary=True).first()
+        if not primary:
+            primary = self.images.first()
+        return primary
+
+    @property
+    def primary_image_url(self):
+        """Return the URL of the primary image, or None"""
+        primary = self.primary_image
+        if primary:
+            return primary.image.url
+        return None
+
     class Meta:
         ordering = ['-created_at']
 

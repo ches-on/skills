@@ -26,8 +26,8 @@
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center gap-3">
-                                    {% if item.product.image %}
-                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 60px; height: 60px; object-fit: cover;" class="rounded">
+                                    {% if item.product.primary_image_url %}
+                                        <img src="{{ item.product.primary_image_url }}" alt="{{ item.product.name }}" style="width: 60px; height: 60px; object-fit: cover;" class="rounded">
                                     {% else %}
                                         <img src="{% static 'images/default-product.jpg' %}" alt="Default" style="width: 60px; height: 60px; object-fit: cover;" class="rounded" onerror="this.src='https://placehold.co/60x60/e8590f/white?text={{ item.product.name|first|upper }}'">
                                     {% endif %}
