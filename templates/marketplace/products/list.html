@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero py-5 mb-5 rounded-4">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Products Marketplace</h1>
+        <p class="lead text-muted mb-4">Discover amazing products from trusted sellers</p>
+
+        <!-- Search and Filter Form -->
+        <form class="row g-2 justify-content-center mb-4" method="GET">
+            <div class="col-md-5">
+                <input type="text" name="q" class="form-control form-control-lg" placeholder="Search products..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-3">
+                <select name="category" class="form-select form-select-lg">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if category_filter == cat.id|stringformat:'i' %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="fa-solid fa-magnifying-glass"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Product Grid -->
+{% if page_obj.object_list %}
+<h2 class="mb-4">
+    <i class="fa-solid fa-store text-primary"></i>
+    Browse Products
+    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-1 small fw-semibold">{{ page_obj.paginator.count }} found</span>
+</h2>
+
+<div class="row">
+    {% for product in page_obj.object_list %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top listing-card-img" alt="{{ product.name }}">
+            {% else %}
+                <img src="{% static 'images/default-product.jpg' %}" class="card-img-top listing-card-img" alt="Default" onerror="this.src='https://placehold.co/400x300/e8590f/white?text={{ product.name|first|upper }}'">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="text-muted small">{{ product.category.name }}</p>
+                <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+                <p class="fw-bold text-primary fs-4">${{ product.price }}</p>
+                {% if product.stock > 0 %}
+                    <span class="badge bg-success">In Stock ({{ product.stock }})</span>
+                {% else %}
+                    <span class="badge bg-danger">Out of Stock</span>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-white border-0">
+                <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary w-100">
+                    <i class="fa-solid fa-eye"></i> View Details
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1&q={{ search_query }}&category={{ category_filter }}">
+                <i class="fa-solid fa-angles-left"></i>
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}&category={{ category_filter }}">
+                <i class="fa-solid fa-angle-left"></i>
+            </a>
+        </li>
+        {% endif %}
+
+        <li class="page-item disabled">
+            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        </li>
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ search_query }}&category={{ category_filter }}">
+                <i class="fa-solid fa-angle-right"></i>
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{ search_query }}&category={{ category_filter }}">
+                <i class="fa-solid fa-angles-right"></i>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="text-center py-5">
+    <i class="fa-solid fa-magnifying-glass fa-3x text-muted mb-3"></i>
+    <h3 class="text-muted">No products found</h3>
+    <p class="text-muted">Try adjusting your search or filter criteria.</p>
+    {% if search_query or category_filter %}
+        <a href="{% url 'product_list' %}" class="btn btn-primary mt-2">
+            <i class="fa-solid fa-rotate-left"></i> Clear Filters
+        </a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

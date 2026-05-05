@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Listing, Profile, ROLE_CHOICES
+from .models import Listing, Profile, ROLE_CHOICES, Product, ProductCategory, CartItem
 
 
 class ListingForm(forms.ModelForm):
@@ -11,6 +11,25 @@ class ListingForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
         }
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'category', 'description', 'price', 'stock', 'image']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'price': forms.NumberInput(attrs={'step': '0.01', 'min': '0'}),
+            'stock': forms.NumberInput(attrs={'min': '0'}),
+        }
+
+
+class CartAddProductForm(forms.Form):
+    quantity = forms.IntegerField(
+        min_value=1,
+        initial=1,
+        widget=forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'style': 'width: 80px;'})
+    )
 
 
 class RegisterForm(UserCreationForm):

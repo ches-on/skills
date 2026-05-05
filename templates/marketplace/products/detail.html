@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" class="img-fluid rounded-4 shadow-sm" alt="{{ product.name }}">
+        {% else %}
+            <img src="{% static 'images/default-product.jpg' %}" class="img-fluid rounded-4 shadow-sm" alt="Default"
+                 onerror="this.src='https://placehold.co/600x400/e8590f/white?text={{ product.name|first|upper }}'">
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h1 class="card-title">{{ product.name }}</h1>
+                        <p class="text-muted">{{ product.category.name }}</p>
+                    </div>
+                    {% if is_seller %}
+                    <div>
+                        <a href="{% url 'edit_product' product.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'delete_product' product.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <h2 class="text-primary fw-bold mb-3">${{ product.price }}</h2>
+
+                <p class="card-text">{{ product.description }}</p>
+
+                <p>
+                    {% if product.stock > 0 %}
+                        <span class="badge bg-success">In Stock ({{ product.stock }} available)</span>
+                    {% else %}
+                        <span class="badge bg-danger">Out of Stock</span>
+                    {% endif %}
+                </p>
+
+                <p class="text-muted small">Sold by: {{ product.seller.username }}</p>
+
+                {% if not is_seller and product.in_stock %}
+                <div class="d-flex gap-2 align-items-center mt-3">
+                    <form method="POST" action="{% url 'add_to_cart' product.pk %}">
+                        {% csrf_token %}
+                        <div class="input-group" style="width: 150px;">
+                            {{ form.quantity }}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <a href="{% url 'product_list' %}" class="btn btn-outline-primary mt-3">
+            <i class="fa-solid fa-arrow-left"></i> Back to Products
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="fa-solid fa-box-open text-primary"></i> My Orders</h1>
+
+{% if orders %}
+<div class="row">
+    {% for order in orders %}
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Order #{{ order.id }}</h5>
+                        <p class="text-muted small mb-0">{{ order.created_at|date:"F d, Y" }}</p>
+                    </div>
+                    <span class="badge
+                        {% if order.status == 'completed' %}bg-success{% elif order.status == 'cancelled' %}bg-danger{% else %}bg-warning{% endif %}
+                    ">{{ order.get_status_display }}</span>
+                </div>
+                <hr>
+                <p class="fw-bold fs-4 text-primary mb-2">${{ order.total_price }}</p>
+                <p class="text-muted small mb-2">{{ order.items.count }} item{{ order.items.count|pluralize }}</p>
+                <a href="{% url 'order_detail' order.pk %}" class="btn btn-sm btn-outline-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="fa-solid fa-box-open fa-3x text-muted mb-3"></i>
+    <h3 class="text-muted">No orders yet</h3>
+    <p class="text-muted">Your purchased products will appear here.</p>
+    <a href="{% url 'product_list' %}" class="btn btn-primary mt-2">
+        <i class="fa-solid fa-store"></i> Browse Products
+    </a>
+</div>
+{% endif %}
+
+{% endblock %}
