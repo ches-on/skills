@@ -5,6 +5,29 @@
 {% block content %}
 <h1 class="mb-4">Edit Listing: {{ listing.title }}</h1>
 
+<!-- Existing Portfolio Images -->
+{% if portfolio_images %}
+<h5 class="mt-4">Existing Portfolio Images</h5>
+<div class="row mb-4">
+    {% for img in portfolio_images %}
+    <div class="col-md-3 mb-2">
+        <div class="card">
+            <img src="{{ img.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;">
+            <div class="card-body p-2">
+                <form method="POST" action="{% url 'delete_service_image' listing.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="image_id" value="{{ img.id }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this image?')">
+                        <i class="fa-solid fa-trash"></i> Remove
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="row">
     <div class="col-md-8">
         <form method="POST" enctype="multipart/form-data">
@@ -22,6 +45,12 @@
                 {% endfor %}
             </div>
             {% endfor %}
+
+            <!-- Image Preview Container for New Images -->
+            <div id="image-preview" class="row mb-3" style="display: none;">
+                <h6>New Images Preview:</h6>
+                <div id="preview-container" class="d-flex flex-wrap gap-2"></div>
+            </div>
 
             <button type="submit" class="btn btn-primary">Update Listing</button>
             <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-outline-secondary">Cancel</a>

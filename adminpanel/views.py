@@ -10,7 +10,8 @@ from django.contrib.auth.forms import UserCreationForm
 
 from marketplace.models import (
     Listing, Profile, ROLE_CHOICES,
-    Product, ProductCategory, Order, OrderItem
+    Product, ProductCategory, Order, OrderItem,
+    ServicePortfolioImage
 )
 from marketplace.forms import ProfileForm, RegisterForm
 from .decorators import admin_required
@@ -200,6 +201,25 @@ def service_delete(request, pk):
         return redirect('admin_service_list')
 
     return render(request, 'adminpanel/service_confirm_delete.html', {'service': service})
+
+
+@admin_required
+def service_portfolio(request, pk):
+    service = get_object_or_404(Listing, pk=pk)
+
+    if request.method == 'POST':
+        image_id = request.POST.get('image_id')
+        if image_id:
+            img = get_object_or_404(ServicePortfolioImage, id=image_id, service=service)
+            img.delete()
+            messages.success(request, 'Portfolio image deleted successfully.')
+            return redirect('admin_service_portfolio', pk=pk)
+
+    context = {
+        'service': service,
+        'portfolio_images': service.portfolio_images.all(),
+    }
+    return render(request, 'adminpanel/service_portfolio.html', context)
 
 
 # ========== PRODUCT MANAGEMENT ==========

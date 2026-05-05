@@ -23,6 +23,12 @@
             </div>
             {% endfor %}
 
+            <!-- Image Preview Container -->
+            <div id="image-preview" class="row mb-3" style="display: none;">
+                <h6>Portfolio Images Preview:</h6>
+                <div id="preview-container" class="d-flex flex-wrap gap-2"></div>
+            </div>
+
             <button type="submit" class="btn btn-primary">Create Listing</button>
             <a href="{% url 'home' %}" class="btn btn-outline-secondary">Cancel</a>
         </form>
@@ -41,6 +47,47 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             input.classList.add('form-control');
         }
+    });
+
+    // Image preview functionality
+    var fileInputs = document.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(function(fileInput) {
+        fileInput.addEventListener('change', function() {
+            var previewContainer = document.getElementById('preview-container');
+            var imagePreview = document.getElementById('image-preview');
+            if (!previewContainer || !imagePreview) return;
+
+            previewContainer.innerHTML = '';
+            var files = this.files;
+
+            if (files && files.length > 0) {
+                imagePreview.style.display = 'block';
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    if (file.type.startsWith('image/')) {
+                        var reader = new FileReader();
+                        reader.onload = (function(f) {
+                            return function(e) {
+                                var col = document.createElement('div');
+                                col.className = 'col-auto';
+                                var img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.style.width = '100px';
+                                img.style.height = '100px';
+                                img.style.objectFit = 'cover';
+                                img.className = 'img-thumbnail';
+                                img.title = f.name;
+                                col.appendChild(img);
+                                previewContainer.appendChild(col);
+                            };
+                        })(file);
+                        reader.readAsDataURL(file);
+                    }
+                }
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
     });
 });
 </script>

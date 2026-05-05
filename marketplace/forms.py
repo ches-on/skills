@@ -34,6 +34,11 @@ class MultipleFileField(forms.FileField):
 
 
 class ListingForm(forms.ModelForm):
+    portfolio_images = MultipleFileField(
+        required=False,
+        help_text='Hold Ctrl (or Cmd) to select multiple portfolio images.'
+    )
+
     class Meta:
         model = Listing
         fields = ['title', 'category', 'skill_name', 'description', 'image', 'contact', 'location']

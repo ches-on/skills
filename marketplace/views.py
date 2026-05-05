@@ -9,7 +9,8 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from .models import (
     Listing, Profile, CATEGORY_CHOICES, ROLE_CHOICES,
-    Product, ProductCategory, Cart, CartItem, Order, OrderItem, ProductImage
+    Product, ProductCategory, Cart, CartItem, Order, OrderItem, ProductImage,
+    ServicePortfolioImage
 )
 from .forms import (
     ListingForm, RegisterForm, ProfileForm,
@@ -80,6 +81,11 @@ def create_listing(request):
             listing = form.save(commit=False)
             listing.created_by = request.user
             listing.save()
+            # Handle portfolio image uploads
+            portfolio_images = form.cleaned_data.get('portfolio_images')
+            if portfolio_images:
+                for img in portfolio_images:
+                    ServicePortfolioImage.objects.create(service=listing, image=img)
             messages.success(request, 'Listing created successfully!')
             return redirect('listing_detail', pk=listing.pk)
     else:
@@ -97,11 +103,35 @@ def edit_listing(request, pk):
         form = ListingForm(request.POST, request.FILES, instance=listing)
         if form.is_valid():
             form.save()
+            # Handle portfolio image uploads
+            portfolio_images = form.cleaned_data.get('portfolio_images')
+            if portfolio_images:
+                for img in portfolio_images:
+                    ServicePortfolioImage.objects.create(service=listing, image=img)
             messages.success(request, 'Listing updated successfully!')
             return redirect('listing_detail', pk=listing.pk)
     else:
         form = ListingForm(instance=listing)
-    return render(request, 'marketplace/edit_listing.html', {'form': form, 'listing': listing})
+
+    # Get existing portfolio images
+    portfolio_images = listing.portfolio_images.all()
+    context = {
+        'form': form,
+        'listing': listing,
+        'portfolio_images': portfolio_images,
+    }
+    return render(request, 'marketplace/edit_listing.html', context)
+
+
+@login_required
+def delete_service_image(request, pk):
+    if request.method == 'POST':
+        image_id = request.POST.get('image_id')
+        image = get_object_or_404(ServicePortfolioImage, id=image_id, service__created_by=request.user)
+        image.delete()
+        messages.success(request, 'Portfolio image deleted successfully!')
+        return redirect('edit_listing', pk=pk)
+    return redirect('edit_listing', pk=pk)
 
 
 @login_required

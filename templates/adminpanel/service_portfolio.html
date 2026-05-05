@@ -1,0 +1,42 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}Service Portfolio - {{ service.title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Portfolio: {{ service.title }}</h1>
+    <a href="{% url 'admin_service_list' %}" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Back to Services
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Portfolio Images</h5>
+    </div>
+    <div class="card-body">
+        {% if portfolio_images %}
+            <div class="row g-3">
+                {% for img in portfolio_images %}
+                    <div class="col-md-3 mb-2">
+                        <div class="card">
+                            <img src="{{ img.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                            <div class="card-body p-2 text-center">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="image_id" value="{{ img.id }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this image?')">
+                                        <i class="fa-solid fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">No portfolio images uploaded for this service.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

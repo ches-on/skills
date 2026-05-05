@@ -59,6 +59,23 @@
                 </p>
             </div>
         </div>
+
+        <!-- Portfolio Images -->
+        {% if listing.portfolio_images.all %}
+        <div class="mt-4">
+            <h5>Portfolio Images</h5>
+            <div class="row g-2">
+                {% for img in listing.portfolio_images.all %}
+                    <div class="col-6 col-md-4 mb-2">
+                        <a href="{{ img.image.url }}" target="_blank">
+                            <img src="{{ img.image.url }}" alt="Portfolio" class="img-fluid rounded" style="height: 150px; object-fit: cover; width: 100%;">
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <a href="{% url 'home' %}" class="btn btn-outline-primary mt-3">Back to Listings</a>
     </div>
     <div class="col-md-4">

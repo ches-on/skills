@@ -14,6 +14,7 @@ urlpatterns = [
     path('services/', views.service_list, name='admin_service_list'),
     path('services/<int:pk>/edit/', views.service_edit, name='admin_service_edit'),
     path('services/<int:pk>/delete/', views.service_delete, name='admin_service_delete'),
+    path('services/<int:pk>/portfolio/', views.service_portfolio, name='admin_service_portfolio'),
 
     # Product management
     path('products/', views.product_list, name='admin_product_list'),

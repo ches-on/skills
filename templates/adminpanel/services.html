@@ -60,6 +60,9 @@
                             <a href="{% url 'admin_service_delete' service.pk %}" class="btn btn-sm btn-outline-danger">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
+                            <a href="{% url 'admin_service_portfolio' service.pk %}" class="btn btn-sm btn-outline-info">
+                                <i class="fa-solid fa-images"></i> Portfolio
+                            </a>
                         </td>
                     </tr>
                     {% empty %}

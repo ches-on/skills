@@ -74,6 +74,22 @@ class Listing(models.Model):
         ordering = ['-created_at']
 
 
+class ServicePortfolioImage(models.Model):
+    service = models.ForeignKey(
+        Listing,
+        on_delete=models.CASCADE,
+        related_name='portfolio_images'
+    )
+    image = models.ImageField(upload_to='services/portfolio/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Portfolio image for {self.service.title}'
+
+    class Meta:
+        ordering = ['uploaded_at']
+
+
 # ========== PRODUCTS MARKETPLACE ==========
 
 class ProductCategory(models.Model):
