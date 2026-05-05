@@ -9,6 +9,7 @@ urlpatterns = [
     path('', include('marketplace.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('admin-dashboard/', include('adminpanel.urls')),
 ]
 
 # Serve media files during development

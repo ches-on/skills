@@ -1,0 +1,134 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Dashboard</h1>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card card-stat h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Total Users</h6>
+                        <h3 class="mb-0">{{ total_users }}</h3>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded">
+                        <i class="fa-solid fa-users fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card card-stat bg-success bg-opacity-10 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Services</h6>
+                        <h3 class="mb-0">{{ total_services }}</h3>
+                    </div>
+                    <div class="bg-success bg-opacity-10 p-3 rounded">
+                        <i class="fa-solid fa-briefcase fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card card-stat bg-warning bg-opacity-10 h-100">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted mb-2">Products</h6>
+                    <h3 class="mb-0">{{ total_products }}</h3>
+                </div>
+                <div class="bg-warning bg-opacity-10 p-3 rounded">
+                    <i class="fa-solid fa-store fa-2x text-warning"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card card-stat bg-info bg-opacity-10 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Orders</h6>
+                        <h3 class="mb-0">{{ total_orders }}</h3>
+                    </div>
+                    <div class="bg-info bg-opacity-10 p-3 rounded">
+                        <i class="fa-solid fa-cart-shopping fa-2x text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Users</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_users %}
+                <div class="list-group list-group-flush">
+                    {% for user in recent_users %}
+                    <a href="{% url 'admin_user_detail' user.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-0">{{ user.username }}</h6>
+                            <small class="text-muted">{{ user.email }}</small>
+                        </div>
+                        <span class="badge bg-primary rounded-pill">{{ user.profile.get_role_display }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">No users yet.</p>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'admin_user_list' %}" class="btn btn-sm btn-outline-primary">View All Users</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Orders</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_orders %}
+                <div class="list-group list-group-flush">
+                    {% for order in recent_orders %}
+                    <a href="{% url 'admin_order_detail' order.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-0">Order #{{ order.id }}</h6>
+                            <small class="text-muted">{{ order.user.username }} - {{ order.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <span class="badge
+                            {% if order.status == 'pending' %}bg-warning
+                            {% elif order.status == 'completed' %}bg-success
+                            {% else %}bg-danger{% endif %} rounded-pill">
+                            {{ order.get_status_display }}
+                        </span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">No orders yet.</p>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'admin_order_list' %}" class="btn btn-sm btn-outline-primary">View All Orders</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -117,6 +117,13 @@
                                     <i class="fa-solid fa-box-open me-2"></i> Orders
                                 </a>
                             </li>
+                            {% if user.is_staff %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'admin_dashboard' %}">
+                                    <i class="fa-solid fa-user-shield me-2"></i> Admin Dashboard
+                                </a>
+                            </li>
+                            {% endif %}
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form method="post" action="{% url 'logout' %}" class="d-inline">

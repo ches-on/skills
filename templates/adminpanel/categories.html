@@ -1,0 +1,103 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Categories</h1>
+    <a href="{% url 'admin_category_add' %}" class="btn btn-primary">
+        <i class="fa-solid fa-plus"></i> Add Category
+    </a>
+</div>
+
+<!-- Search -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" name="q" class="form-control" placeholder="Search categories..." value="{{ search_query }}">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Product Categories -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Product Categories</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Products</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat in product_categories %}
+                    <tr>
+                        <td><strong>{{ cat.name }}</strong></td>
+                        <td>{{ cat.description|truncatewords:10|default:"-" }}</td>
+                        <td><span class="badge bg-primary">{{ cat.num_products }}</span></td>
+                        <td>
+                            <a href="{% url 'admin_category_edit' cat.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fa-solid fa-edit"></i>
+                            </a>
+                            <a href="{% url 'admin_category_delete' cat.pk %}" class="btn btn-sm btn-outline-danger">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">No categories found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Service Categories -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Service Categories</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Services</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat_code, cat_name in service_categories %}
+                    <tr>
+                        <td><code>{{ cat_code }}</code></td>
+                        <td><strong>{{ cat_name }}</strong></td>
+                        <td><span class="badge bg-info">{{ cat_name }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-muted">
+            <small>Service categories are defined in the code (Listing.CATEGORY_CHOICES).</small>
+        </div>
+    </div>
+</div>
+{% endblock %}

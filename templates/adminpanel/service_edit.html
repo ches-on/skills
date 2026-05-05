@@ -1,0 +1,54 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}Edit Service{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Edit Service</h1>
+    <a href="{% url 'admin_service_list' %}" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" name="title" id="title" class="form-control" value="{{ service.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select name="category" id="category" class="form-select">
+                    {% for cat_code, cat_name in categories %}
+                        <option value="{{ cat_code }}" {% if service.category == cat_code %}selected{% endif %}>{{ cat_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="skill_name" class="form-label">Skill Name</label>
+                <input type="text" name="skill_name" id="skill_name" class="form-control" value="{{ service.skill_name }}">
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" id="description" class="form-control" rows="4" required>{{ service.description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="contact" class="form-label">Contact</label>
+                <input type="text" name="contact" id="contact" class="form-control" value="{{ service.contact }}">
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" name="location" id="location" class="form-control" value="{{ service.location }}">
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-save"></i> Save Changes
+                </button>
+                <a href="{% url 'admin_service_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
