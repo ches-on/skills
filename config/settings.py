@@ -64,10 +64,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Database - Railway compatible
+# Database - Railway compatible, defaults to SQLite locally
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
+        default='sqlite:///db.sqlite3',
         conn_max_age=600
     )
 }
