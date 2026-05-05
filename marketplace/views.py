@@ -261,16 +261,11 @@ def create_product(request):
             product = form.save(commit=False)
             product.seller = request.user
             product.save()
-            # Handle primary image
-            primary_image = form.cleaned_data.get('primary_image')
-            if primary_image:
-                ProductImage.objects.filter(product=product, is_primary=True).update(is_primary=False)
-                ProductImage.objects.create(product=product, image=primary_image, is_primary=True)
-            # Handle additional images
+            # Handle multiple image uploads from form
             images = form.cleaned_data.get('images')
             if images:
                 for image in images:
-                    ProductImage.objects.create(product=product, image=image, is_primary=False)
+                    ProductImage.objects.create(product=product, image=image)
             messages.success(request, 'Product created successfully!')
             return redirect('product_detail', pk=product.pk)
     else:
@@ -288,16 +283,11 @@ def edit_product(request, pk):
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            # Handle primary image
-            primary_image = form.cleaned_data.get('primary_image')
-            if primary_image:
-                ProductImage.objects.filter(product=product, is_primary=True).update(is_primary=False)
-                ProductImage.objects.create(product=product, image=primary_image, is_primary=True)
-            # Handle additional images
+            # Handle multiple image uploads from form
             images = form.cleaned_data.get('images')
             if images:
                 for img in images:
-                    ProductImage.objects.create(product=product, image=img, is_primary=False)
+                    ProductImage.objects.create(product=product, image=img)
             messages.success(request, 'Product updated successfully!')
             return redirect('product_detail', pk=product.pk)
     else:

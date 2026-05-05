@@ -24,6 +24,12 @@
             </div>
             {% endfor %}
 
+            <!-- Image Preview Container -->
+            <div id="image-preview" class="row mb-3" style="display: none;">
+                <h6>Selected Images Preview:</h6>
+                <div id="preview-container" class="d-flex flex-wrap gap-2"></div>
+            </div>
+
             <button type="submit" class="btn btn-primary">Create Product</button>
             <a href="{% url 'seller_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
         </form>
@@ -45,33 +51,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Image preview for all file inputs
-    var fileInputs = document.querySelectorAll('input[type="file"]');
-    fileInputs.forEach(function(fileInput) {
-        var previewId = 'preview-' + fileInput.name;
-        var previewDiv = document.getElementById(previewId);
-        if (!previewDiv) {
-            previewDiv = document.createElement('div');
-            previewDiv.id = previewId;
-            previewDiv.className = 'row mb-3';
-            previewDiv.style.display = 'none';
-            var title = document.createElement('h6');
-            title.textContent = fileInput.name === 'primary_image' ? 'Primary Image Preview:' : 'Additional Images Preview:';
-            previewDiv.appendChild(title);
-            var container = document.createElement('div');
-            container.className = 'd-flex flex-wrap gap-2';
-            previewDiv.appendChild(container);
-            fileInput.parentNode.appendChild(previewDiv);
-        }
+    // Image preview functionality
+    var fileInput = document.querySelector('input[type="file"]');
+    var previewContainer = document.getElementById('preview-container');
+    var imagePreview = document.getElementById('image-preview');
 
+    if (fileInput) {
         fileInput.addEventListener('change', function() {
-            var previewContainer = document.getElementById(previewId);
-            var container = previewContainer.querySelector('.d-flex');
-            container.innerHTML = '';
+            previewContainer.innerHTML = '';
             var files = this.files;
 
             if (files && files.length > 0) {
-                previewContainer.style.display = 'block';
+                imagePreview.style.display = 'block';
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
                     if (file.type.startsWith('image/')) {
@@ -88,17 +79,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                 img.className = 'img-thumbnail';
                                 img.title = f.name;
                                 col.appendChild(img);
-                                container.appendChild(col);
+                                previewContainer.appendChild(col);
                             };
                         })(file);
                         reader.readAsDataURL(file);
                     }
                 }
             } else {
-                previewContainer.style.display = 'none';
+                imagePreview.style.display = 'none';
             }
         });
-    });
+    }
 });
 </script>
 {% endblock %}

@@ -48,25 +48,14 @@ class ListingForm(forms.ModelForm):
 
 
 class ProductForm(forms.ModelForm):
-    primary_image = forms.ImageField(
-        required=True,
-        help_text='Main product image displayed in listings.',
-        widget=forms.FileInput(attrs={'accept': 'image/*', 'class': 'form-control'})
-    )
     images = MultipleFileField(
         required=False,
-        help_text='Hold Ctrl (or Cmd) to select multiple additional images.'
-    )
-    category = forms.ModelChoiceField(
-        queryset=ProductCategory.objects.all(),
-        required=True,
-        widget=forms.Select(attrs={'class': 'form-select'}),
-        help_text='Select the product category'
+        help_text='Hold Ctrl (or Cmd) to select multiple images.'
     )
 
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'stock']
+        fields = ['name', 'category', 'description', 'price', 'stock']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
             'price': forms.NumberInput(attrs={'step': '0.01', 'min': '0'}),

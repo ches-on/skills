@@ -139,14 +139,13 @@ class ProductImage(models.Model):
         related_name='images'
     )
     image = models.ImageField(upload_to='products/')
-    is_primary = models.BooleanField(default=False)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Image for {self.product.name}'
 
     class Meta:
-        ordering = ['-is_primary', 'uploaded_at']
+        ordering = ['uploaded_at']
 
 
 class Cart(models.Model):

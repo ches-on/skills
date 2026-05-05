@@ -6,28 +6,24 @@
 {% block content %}
 <div class="row">
     <div class="col-md-6">
-        {% with primary=product.images.all|first %}
-            {% if primary %}
-                <img src="{{ primary.image.url }}" class="img-fluid rounded-4 shadow-sm mb-3" alt="{{ product.name }}" style="width: 100%; max-height: 400px; object-fit: cover;">
-            {% else %}
-                <img src="{% static 'images/default-product.jpg' %}" class="img-fluid rounded-4 shadow-sm mb-3" alt="Default"
-                     onerror="this.src='https://placehold.co/600x400/e8590f/white?text={{ product.name|first|upper }}'" style="width: 100%; max-height: 400px; object-fit: cover;">
-            {% endif %}
-        {% endwith %}
+        {% if product.main_image %}
+            <img src="{{ product.main_image.url }}" class="img-fluid rounded-4 shadow-sm mb-3" alt="{{ product.name }}">
+        {% else %}
+            <img src="{% static 'images/default-product.jpg' %}" class="img-fluid rounded-4 shadow-sm mb-3" alt="Default"
+                 onerror="this.src='https://placehold.co/600x400/e8590f/white?text={{ product.name|first|upper }}'">
+        {% endif %}
 
         <!-- Additional Images Gallery -->
-        {% with images=product.images.all %}
-            {% if images|length > 1 %}
-            <div class="row g-2">
-                {% for img in images %}
-                <div class="col-4">
-                    <img src="{{ img.image.url }}" class="img-fluid rounded shadow-sm" alt="Product image"
-                         style="height: 100px; object-fit: cover;">
-                </div>
-                {% endfor %}
+        {% if product.images.all %}
+        <div class="row g-2">
+            {% for img in product.images.all %}
+            <div class="col-4">
+                <img src="{{ img.image.url }}" class="img-fluid rounded shadow-sm" alt="Product image"
+                     style="height: 100px; object-fit: cover;">
             </div>
-            {% endif %}
-        {% endwith %}
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
     <div class="col-md-6">
         <div class="card border-0 shadow-sm h-100">
