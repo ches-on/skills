@@ -33,12 +33,13 @@ def home(request):
     search_query = request.GET.get('q', '')
     category_filter = request.GET.get('category', '')
 
-    # Listings (services)
     listings = Listing.objects.all()
+
     if search_query:
         listings = listings.filter(
             Q(title__icontains=search_query) | Q(skill_name__icontains=search_query)
         )
+
     if category_filter:
         listings = listings.filter(category=category_filter)
 
@@ -46,16 +47,8 @@ def home(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # Products
-    products = Product.objects.filter(stock__gt=0)
-    if search_query:
-        products = products.filter(name__icontains=search_query)
-    if category_filter:
-        products = products.filter(category__id=category_filter)
-
     context = {
         'page_obj': page_obj,
-        'products': products[:6],
         'search_query': search_query,
         'category_filter': category_filter,
         'categories': CATEGORY_CHOICES,

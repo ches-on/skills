@@ -44,8 +44,8 @@
     {% for product in page_obj.object_list %}
     <div class="col-md-4 mb-4">
         <div class="card h-100 border-0 shadow-sm">
-            {% if product.primary_image_url %}
-                <img src="{{ product.primary_image_url }}" class="card-img-top listing-card-img" alt="{{ product.name }}">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top listing-card-img" alt="{{ product.name }}">
             {% else %}
                 <img src="{% static 'images/default-product.jpg' %}" class="card-img-top listing-card-img" alt="Default" onerror="this.src='https://placehold.co/400x300/e8590f/white?text={{ product.name|first|upper }}'">
             {% endif %}
