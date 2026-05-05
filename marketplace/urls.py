@@ -12,6 +12,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('register/', views.register, name='register'),
+    path('delete-account/', views.delete_account, name='delete_account'),
 
     # Product URLs
     path('products/', views.product_list, name='product_list'),
@@ -19,6 +20,7 @@ urlpatterns = [
     path('products/create/', views.create_product, name='create_product'),
     path('product/<int:pk>/edit/', views.edit_product, name='edit_product'),
     path('product/<int:pk>/delete/', views.delete_product, name='delete_product'),
+    path('product/<int:pk>/delete-image/', views.delete_product_image, name='delete_product_image'),
     path('seller/dashboard/', views.seller_dashboard, name='seller_dashboard'),
 
     # Cart URLs

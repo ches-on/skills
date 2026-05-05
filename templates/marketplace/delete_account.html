@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Account{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="fa-solid fa-triangle-exclamation"></i> Delete Account</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="fa-solid fa-warning"></i>
+                    <strong>Warning:</strong> This action cannot be undone. All your data will be permanently deleted.
+                </div>
+
+                <p>Deleting your account will:</p>
+                <ul>
+                    <li>Remove all your personal information</li>
+                    {% if user.profile.role == 'provider' %}
+                    <li>Delete all your service listings</li>
+                    {% elif user.profile.role == 'merchant' %}
+                    <li>Delete all your products</li>
+                    {% endif %}
+                    <li>Remove your cart and order history</li>
+                    <li>Delete your profile and associated data</li>
+                </ul>
+
+                <p class="text-muted small">User: <strong>{{ user.username }}</strong></p>
+                <p class="text-muted small">Role: <strong>{{ user.profile.get_role_display }}</strong></p>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you absolutely sure you want to delete your account? This cannot be undone.')">
+                            <i class="fa-solid fa-trash-can"></i> Yes, Delete My Account
+                        </button>
+                        <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
+                            <i class="fa-solid fa-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -6,6 +6,29 @@
 {% block content %}
 <h1 class="mb-4">Edit Product: {{ product.name }}</h1>
 
+<!-- Existing Images -->
+{% if product.images.all %}
+<h5 class="mt-4">Existing Images</h5>
+<div class="row mb-4">
+    {% for img in product.images.all %}
+    <div class="col-md-3 mb-2">
+        <div class="card">
+            <img src="{{ img.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;">
+            <div class="card-body p-2">
+                <form method="POST" action="{% url 'delete_product_image' product.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="image_id" value="{{ img.id }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this image?')">
+                        <i class="fa-solid fa-trash"></i> Remove
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="row">
     <div class="col-md-8">
         <form method="POST" enctype="multipart/form-data">
@@ -23,6 +46,12 @@
                 {% endfor %}
             </div>
             {% endfor %}
+
+            <!-- Image Preview Container for New Images -->
+            <div id="image-preview" class="row mb-3" style="display: none;">
+                <h6>New Images Preview:</h6>
+                <div id="preview-container" class="d-flex flex-wrap gap-2"></div>
+            </div>
 
             <button type="submit" class="btn btn-primary">Update Product</button>
             <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-secondary">Cancel</a>
@@ -44,6 +73,46 @@ document.addEventListener('DOMContentLoaded', function() {
             input.classList.add('form-control');
         }
     });
+
+    // Image preview functionality
+    var fileInput = document.querySelector('input[type="file"]');
+    var previewContainer = document.getElementById('preview-container');
+    var imagePreview = document.getElementById('image-preview');
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            previewContainer.innerHTML = '';
+            var files = this.files;
+
+            if (files && files.length > 0) {
+                imagePreview.style.display = 'block';
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    if (file.type.startsWith('image/')) {
+                        var reader = new FileReader();
+                        reader.onload = (function(f) {
+                            return function(e) {
+                                var col = document.createElement('div');
+                                col.className = 'col-auto';
+                                var img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.style.width = '100px';
+                                img.style.height = '100px';
+                                img.style.objectFit = 'cover';
+                                img.className = 'img-thumbnail';
+                                img.title = f.name;
+                                col.appendChild(img);
+                                previewContainer.appendChild(col);
+                            };
+                        })(file);
+                        reader.readAsDataURL(file);
+                    }
+                }
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
+    }
 });
 </script>
 {% endblock %}

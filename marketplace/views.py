@@ -1,19 +1,29 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden, JsonResponse
 from django.db.models import Q
 from django.conf import settings
+from django.contrib.auth.models import User
 from .models import (
-    Listing, Profile, CATEGORY_CHOICES,
-    Product, ProductCategory, Cart, CartItem, Order, OrderItem
+    Listing, Profile, CATEGORY_CHOICES, ROLE_CHOICES,
+    Product, ProductCategory, Cart, CartItem, Order, OrderItem, ProductImage
 )
 from .forms import (
     ListingForm, RegisterForm, ProfileForm,
     ProductForm, CartAddProductForm
 )
+
+
+# ========== HELPER FUNCTIONS ==========
+
+def get_role_display(user):
+    """Get the display name of the user's role"""
+    if hasattr(user, 'profile'):
+        return user.profile.get_role_display()
+    return 'Customer'
 
 
 # ========== EXISTING LISTING VIEWS ==========
@@ -59,8 +69,9 @@ def listing_detail(request, pk):
 
 @login_required
 def create_listing(request):
+    # Only providers can create services
     if not request.user.profile.is_provider:
-        messages.error(request, 'Only providers can create listings.')
+        messages.error(request, 'Only service providers can create listings.')
         return redirect('home')
 
     if request.method == 'POST':
@@ -108,12 +119,25 @@ def delete_listing(request, pk):
 
 @login_required
 def dashboard(request):
-    listings = Listing.objects.filter(created_by=request.user)
-    products = Product.objects.filter(seller=request.user)
-    context = {
-        'listings': listings,
-        'products': products,
-    }
+    """Role-based dashboard - shows different content based on user role"""
+    user_role = request.user.profile.role
+
+    context = {}
+
+    if user_role == 'provider':
+        # Providers see their services
+        listings = Listing.objects.filter(created_by=request.user)
+        context['listings'] = listings
+        context['dashboard_type'] = 'provider'
+    elif user_role == 'merchant':
+        # Merchants see their products
+        products = Product.objects.filter(seller=request.user)
+        context['products'] = products
+        context['dashboard_type'] = 'merchant'
+    else:
+        # Customers see nothing (or could see their orders)
+        context['dashboard_type'] = 'customer'
+
     return render(request, 'marketplace/dashboard.html', context)
 
 
@@ -196,8 +220,9 @@ def product_detail(request, pk):
 
 @login_required
 def create_product(request):
-    if not request.user.profile.is_provider:
-        messages.error(request, 'Only providers can create products.')
+    # Only merchants can create products
+    if not request.user.profile.is_merchant:
+        messages.error(request, 'Only merchants can create products.')
         return redirect('product_list')
 
     if request.method == 'POST':
@@ -206,6 +231,11 @@ def create_product(request):
             product = form.save(commit=False)
             product.seller = request.user
             product.save()
+            # Handle multiple image uploads from form
+            images = form.cleaned_data.get('images')
+            if images:
+                for image in images:
+                    ProductImage.objects.create(product=product, image=image)
             messages.success(request, 'Product created successfully!')
             return redirect('product_detail', pk=product.pk)
     else:
@@ -223,6 +253,11 @@ def edit_product(request, pk):
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
+            # Handle multiple image uploads from form
+            images = form.cleaned_data.get('images')
+            if images:
+                for img in images:
+                    ProductImage.objects.create(product=product, image=img)
             messages.success(request, 'Product updated successfully!')
             return redirect('product_detail', pk=product.pk)
     else:
@@ -244,7 +279,23 @@ def delete_product(request, pk):
 
 
 @login_required
+def delete_product_image(request, pk):
+    if request.method == 'POST':
+        image_id = request.POST.get('image_id')
+        image = get_object_or_404(ProductImage, id=image_id, product__seller=request.user)
+        image.delete()
+        messages.success(request, 'Image deleted successfully!')
+    return redirect('edit_product', pk=pk)
+
+
+@login_required
 def seller_dashboard(request):
+    """Dashboard for merchants to manage their products"""
+    # Only merchants should access this
+    if not request.user.profile.is_merchant:
+        messages.error(request, 'Access denied. This page is for merchants only.')
+        return redirect('home')
+
     products = Product.objects.filter(seller=request.user)
     context = {
         'products': products,
@@ -348,3 +399,20 @@ def order_detail(request, pk):
 def my_orders(request):
     orders = Order.objects.filter(user=request.user)
     return render(request, 'marketplace/products/my_orders.html', {'orders': orders})
+
+
+# ========== ACCOUNT MANAGEMENT ==========
+
+@login_required
+def delete_account(request):
+    """Allow users to delete their own account"""
+    if request.method == 'POST':
+        user = request.user
+        # Logout the user first
+        logout(request)
+        # Delete the user (this will cascade delete profile, cart, etc. due to on_delete=models.CASCADE)
+        user.delete()
+        messages.success(request, 'Your account has been deleted successfully.')
+        return redirect('home')
+
+    return render(request, 'marketplace/delete_account.html')
