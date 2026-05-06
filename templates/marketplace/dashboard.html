@@ -30,31 +30,7 @@
                             <h5 class="card-title">{{ listing.title }}</h5>
                             <p class="text-muted small">{{ listing.skill_name }}</p>
                         </div>
-                        {% if listing.category == 'housekeeping' %}
-                            <span class="badge bg-primary">{{ listing.get_category_display }}</span>
-                        {% elif listing.category == 'salon' %}
-                            <span class="badge bg-primary">{{ listing.get_category_display }}</span>
-                        {% elif listing.category == 'sales' %}
-                            <span class="badge bg-success">{{ listing.get_category_display }}</span>
-                        {% elif listing.category == 'tutoring' %}
-                            <span class="badge bg-warning">{{ listing.get_category_display }}</span>
-                        {% elif listing.category == 'repair' %}
-                            <span class="badge bg-dark">{{ listing.get_category_display }}</span>
-                        {% elif listing.category == 'fitness' %}
-                            <span class="badge bg-danger">{{ listing.get_category_display }}</span>
-                        {% elif listing.category == 'pet_care' %}
-                            <span class="badge bg-secondary">{{ listing.get_category_display }}</span>
-                        {% elif listing.category == 'events' %}
-                            <span class="badge bg-light text-dark">{{ listing.get_category_display }}</span>
-                        {% elif listing.category == 'delivery' %}
-                            <span class="badge bg-primary">{{ listing.get_category_display }}</span>
-                        {% elif listing.category == 'cooking' %}
-                            <span class="badge bg-success">{{ listing.get_category_display }}</span>
-                        {% elif listing.category == 'photography' %}
-                            <span class="badge bg-primary">{{ listing.get_category_display }}</span>
-                        {% else %}
-                            <span class="badge bg-secondary">{{ listing.get_category_display }}</span>
-                        {% endif %}
+                        <span class="badge bg-primary">{{ listing.category.name }}</span>
                     </div>
                     <p class="card-text text-muted small mt-2">{{ listing.location }}</p>
                     <p class="card-text">{{ listing.description|truncatewords:20 }}</p>

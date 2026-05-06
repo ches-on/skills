@@ -21,8 +21,8 @@
             <div class="mb-3">
                 <label for="category" class="form-label">Category</label>
                 <select name="category" id="category" class="form-select">
-                    {% for cat_code, cat_name in categories %}
-                        <option value="{{ cat_code }}" {% if service.category == cat_code %}selected{% endif %}>{{ cat_name }}</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if service.category.id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
                     {% endfor %}
                 </select>
             </div>

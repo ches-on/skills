@@ -50,7 +50,7 @@
                     {% for service in page_obj %}
                     <tr>
                         <td><strong>{{ service.title }}</strong></td>
-                        <td><span class="badge bg-primary">{{ service.get_category_display }}</span></td>
+                        <td><span class="badge bg-primary">{{ service.category.name }}</span></td>
                         <td>{{ service.created_by.username }}</td>
                         <td>{{ service.location }}</td>
                         <td>

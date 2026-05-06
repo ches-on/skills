@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.conf import settings
 from django.contrib.auth.models import User
 from .models import (
-    Listing, Profile, CATEGORY_CHOICES, ROLE_CHOICES,
+    Listing, Profile, ROLE_CHOICES, ServiceCategory,
     Product, ProductCategory, Cart, CartItem, Order, OrderItem, ProductImage,
     ServicePortfolioImage
 )
@@ -41,7 +41,7 @@ def home(request):
         )
 
     if category_filter:
-        listings = listings.filter(category=category_filter)
+        listings = listings.filter(category__id=category_filter)
 
     paginator = Paginator(listings, 6)
     page_number = request.GET.get('page')
@@ -51,7 +51,7 @@ def home(request):
         'page_obj': page_obj,
         'search_query': search_query,
         'category_filter': category_filter,
-        'categories': CATEGORY_CHOICES,
+        'categories': ServiceCategory.objects.all(),
     }
     return render(request, 'marketplace/home.html', context)
 

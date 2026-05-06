@@ -10,24 +10,36 @@
                 <h4 class="mb-0"><i class="fa-solid fa-triangle-exclamation"></i> Confirm Delete</h4>
             </div>
             <div class="card-body">
-                <p>Are you sure you want to delete the category:</p>
+                <p>Are you sure you want to delete the {% if type == 'service' %}service {% endif %}category:</p>
                 <h5 class="text-danger">{{ category.name }}</h5>
                 <p class="text-muted">{{ category.description }}</p>
 
-                {% if category.products.exists %}
-                    <div class="alert alert-warning">
-                        <i class="fa-solid fa-warning"></i>
-                        <strong>Warning:</strong> This category has {{ category.products.count }} product(s).
-                        You must reassign or delete these products before deleting the category.
-                    </div>
+                {% if type == 'service' %}
+                    {% if category.listings.exists %}
+                        <div class="alert alert-warning">
+                            <i class="fa-solid fa-warning"></i>
+                            <strong>Warning:</strong> This category has {{ category.listings.count }} service(s).
+                            You must reassign or delete these services before deleting the category.
+                        </div>
+                    {% endif %}
+                {% else %}
+                    {% if category.products.exists %}
+                        <div class="alert alert-warning">
+                            <i class="fa-solid fa-warning"></i>
+                            <strong>Warning:</strong> This category has {{ category.products.count }} product(s).
+                            You must reassign or delete these products before deleting the category.
+                        </div>
+                    {% endif %}
                 {% endif %}
 
                 <p class="text-muted small">This action cannot be undone.</p>
 
                 <form method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="type" value="{{ type|default:'product' }}">
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-danger" {% if category.products.exists %}disabled{% endif %}>
+                        <button type="submit" class="btn btn-danger"
+                            {% if type == 'service' and category.listings.exists or type != 'service' and category.products.exists %}disabled{% endif %}>
                             <i class="fa-solid fa-trash-can"></i> Yes, Delete
                         </button>
                         <a href="{% url 'admin_category_list' %}" class="btn btn-outline-secondary">Cancel</a>

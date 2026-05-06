@@ -71,32 +71,45 @@
 
 <!-- Service Categories -->
 <div class="card">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Service Categories</h5>
+        <a href="{% url 'admin_category_add' %}?type=service" class="btn btn-sm btn-primary">
+            <i class="fa-solid fa-plus"></i> Add Service Category
+        </a>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Code</th>
                         <th>Name</th>
+                        <th>Description</th>
                         <th>Services</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for cat_code, cat_name in service_categories %}
+                    {% for cat in service_categories %}
                     <tr>
-                        <td><code>{{ cat_code }}</code></td>
-                        <td><strong>{{ cat_name }}</strong></td>
-                        <td><span class="badge bg-info">{{ cat_name }}</span></td>
+                        <td><strong>{{ cat.name }}</strong></td>
+                        <td>{{ cat.description|truncatewords:10|default:"-" }}</td>
+                        <td><span class="badge bg-primary">{{ cat.listings.count }}</span></td>
+                        <td>
+                            <a href="{% url 'admin_category_edit' cat.id %}?type=service" class="btn btn-sm btn-outline-primary">
+                                <i class="fa-solid fa-edit"></i>
+                            </a>
+                            <a href="{% url 'admin_category_delete' cat.id %}?type=service" class="btn btn-sm btn-outline-danger">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">No service categories found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-        </div>
-        <div class="card-footer text-muted">
-            <small>Service categories are defined in the code (Listing.CATEGORY_CHOICES).</small>
         </div>
     </div>
 </div>

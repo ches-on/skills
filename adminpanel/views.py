@@ -9,7 +9,7 @@ from django.http import HttpResponseForbidden
 from django.contrib.auth.forms import UserCreationForm
 
 from marketplace.models import (
-    Listing, Profile, ROLE_CHOICES,
+    Listing, Profile, ROLE_CHOICES, ServiceCategory,
     Product, ProductCategory, Order, OrderItem,
     ServicePortfolioImage
 )
@@ -145,7 +145,7 @@ def service_list(request):
         )
 
     if category_filter:
-        services = services.filter(category=category_filter)
+        services = services.filter(category__id=category_filter)
 
     paginator = Paginator(services, 20)
     page_number = request.GET.get('page')
@@ -155,7 +155,7 @@ def service_list(request):
         'page_obj': page_obj,
         'search_query': search_query,
         'category_filter': category_filter,
-        'categories': Listing.CATEGORY_CHOICES,
+        'categories': ServiceCategory.objects.all(),
     }
     return render(request, 'adminpanel/services.html', context)
 
@@ -185,7 +185,7 @@ def service_edit(request, pk):
 
     context = {
         'service': service,
-        'categories': Listing.CATEGORY_CHOICES,
+        'categories': ServiceCategory.objects.all(),
     }
     return render(request, 'adminpanel/service_edit.html', context)
 
@@ -310,7 +310,7 @@ def category_list(request):
 
     context = {
         'product_categories': product_categories,
-        'service_categories': Listing.CATEGORY_CHOICES,
+        'service_categories': ServiceCategory.objects.all(),
         'search_query': search_query,
     }
     return render(request, 'adminpanel/categories.html', context)
@@ -318,31 +318,51 @@ def category_list(request):
 
 @admin_required
 def category_add(request):
+    category_type = request.GET.get('type', 'product')
+
     if request.method == 'POST':
         name = request.POST.get('name')
         description = request.POST.get('description', '')
+        category_type = request.POST.get('type', 'product')
 
         if name:
-            if ProductCategory.objects.filter(name=name).exists():
+            if category_type == 'service':
+                model = ServiceCategory
+            else:
+                model = ProductCategory
+
+            if model.objects.filter(name=name).exists():
                 messages.error(request, 'Category with this name already exists.')
             else:
-                ProductCategory.objects.create(name=name, description=description)
+                model.objects.create(name=name, description=description)
                 messages.success(request, f'Category "{name}" created successfully.')
                 return redirect('admin_category_list')
 
-    return render(request, 'adminpanel/category_form.html')
+    context = {'type': category_type}
+    return render(request, 'adminpanel/category_form.html', context)
 
 
 @admin_required
 def category_edit(request, pk):
-    category = get_object_or_404(ProductCategory, pk=pk)
+    category_type = request.GET.get('type', 'product')
+
+    if category_type == 'service':
+        category = get_object_or_404(ServiceCategory, pk=pk)
+    else:
+        category = get_object_or_404(ProductCategory, pk=pk)
 
     if request.method == 'POST':
         name = request.POST.get('name')
         description = request.POST.get('description', '')
+        category_type = request.POST.get('type', 'product')
 
         if name:
-            if ProductCategory.objects.filter(name=name).exclude(pk=pk).exists():
+            if category_type == 'service':
+                model = ServiceCategory
+            else:
+                model = ProductCategory
+
+            if model.objects.filter(name=name).exclude(pk=pk).exists():
                 messages.error(request, 'Category with this name already exists.')
             else:
                 category.name = name
@@ -353,25 +373,44 @@ def category_edit(request, pk):
 
     context = {
         'category': category,
+        'type': category_type,
     }
     return render(request, 'adminpanel/category_form.html', context)
 
 
 @admin_required
 def category_delete(request, pk):
-    category = get_object_or_404(ProductCategory, pk=pk)
+    category_type = request.GET.get('type', 'product')
+
+    if category_type == 'service':
+        category = get_object_or_404(ServiceCategory, pk=pk)
+    else:
+        category = get_object_or_404(ProductCategory, pk=pk)
 
     if request.method == 'POST':
         name = category.name
-        # Check if any products use this category
-        if category.products.exists():
-            messages.error(request, f'Cannot delete category "{name}" because it has products. Remove products first.')
+        category_type = request.POST.get('type', 'product')
+        # Check if any items use this category
+        if category_type == 'service':
+            if category.listings.exists():
+                messages.error(request, f'Cannot delete category "{name}" because it has services. Remove services first.')
+            else:
+                category.delete()
+                messages.success(request, f'Category "{name}" deleted successfully.')
+                return redirect('admin_category_list')
         else:
-            category.delete()
-            messages.success(request, f'Category "{name}" deleted successfully.')
-            return redirect('admin_category_list')
+            if category.products.exists():
+                messages.error(request, f'Cannot delete category "{name}" because it has products. Remove products first.')
+            else:
+                category.delete()
+                messages.success(request, f'Category "{name}" deleted successfully.')
+                return redirect('admin_category_list')
 
-    return render(request, 'adminpanel/category_confirm_delete.html', {'category': category})
+    context = {
+        'category': category,
+        'type': category_type,
+    }
+    return render(request, 'adminpanel/category_confirm_delete.html', context)
 
 
 # ========== ORDER MANAGEMENT ==========

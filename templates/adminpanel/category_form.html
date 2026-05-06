@@ -1,10 +1,10 @@
 {% extends 'adminpanel/base.html' %}
 
-{% block title %}{% if category %}Edit Category{% else %}Add Category{% endif %}{% endblock %}
+{% block title %}{% if category %}Edit {% if type == 'service' %}Service {% endif %}Category{% else %}Add {% if type == 'service' %}Service {% endif %}Category{% endif %}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>{% if category %}Edit Category{% else %}Add New Category{% endif %}</h1>
+    <h1>{% if category %}Edit {% if type == 'service' %}Service {% endif %}Category{% else %}Add New {% if type == 'service' %}Service {% endif %}Category{% endif %}</h1>
     <a href="{% url 'admin_category_list' %}" class="btn btn-outline-secondary">
         <i class="fa-solid fa-arrow-left"></i> Back to List
     </a>
@@ -14,6 +14,7 @@
     <div class="card-body">
         <form method="post">
             {% csrf_token %}
+            <input type="hidden" name="type" value="{{ type|default:'product' }}">
             <div class="mb-3">
                 <label for="name" class="form-label">Category Name</label>
                 <input type="text" name="name" id="name" class="form-control" value="{% if category %}{{ category.name }}{% endif %}" required>

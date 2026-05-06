@@ -24,31 +24,7 @@
                     </div>
                     {% endif %}
                 </div>
-                {% if listing.category == 'housekeeping' %}
-                    <span class="badge bg-primary mb-3">{{ listing.get_category_display }}</span>
-                {% elif listing.category == 'salon' %}
-                    <span class="badge bg-primary mb-3">{{ listing.get_category_display }}</span>
-                {% elif listing.category == 'sales' %}
-                    <span class="badge bg-success mb-3">{{ listing.get_category_display }}</span>
-                {% elif listing.category == 'tutoring' %}
-                    <span class="badge bg-warning mb-3">{{ listing.get_category_display }}</span>
-                {% elif listing.category == 'repair' %}
-                    <span class="badge bg-dark mb-3">{{ listing.get_category_display }}</span>
-                {% elif listing.category == 'fitness' %}
-                    <span class="badge bg-danger mb-3">{{ listing.get_category_display }}</span>
-                {% elif listing.category == 'pet_care' %}
-                    <span class="badge bg-secondary mb-3">{{ listing.get_category_display }}</span>
-                {% elif listing.category == 'events' %}
-                    <span class="badge bg-light text-dark mb-3">{{ listing.get_category_display }}</span>
-                {% elif listing.category == 'delivery' %}
-                    <span class="badge bg-primary mb-3">{{ listing.get_category_display }}</span>
-                {% elif listing.category == 'cooking' %}
-                    <span class="badge bg-success mb-3">{{ listing.get_category_display }}</span>
-                {% elif listing.category == 'photography' %}
-                    <span class="badge bg-primary mb-3">{{ listing.get_category_display }}</span>
-                {% else %}
-                    <span class="badge bg-secondary mb-3">{{ listing.get_category_display }}</span>
-                {% endif %}
+                <span class="badge bg-primary mb-3">{{ listing.category.name }}</span>
                 <span class="badge bg-light text-dark mb-3">{{ listing.skill_name }}</span>
                 <p class="card-text">{{ listing.description }}</p>
                 <p class="text-muted">
