@@ -45,7 +45,7 @@
     <div class="col-md-4 mb-4">
         <div class="card h-100 border-0 shadow-sm">
             {% if product.image %}
-                <img src="{{ product.image.url }}" class="card-img-top listing-card-img" alt="{{ product.name }}">
+                <img src="{{ product.primary_image.image.url }}" class="card-img-top listing-card-img" alt="{{ product.name }}">
             {% else %}
                 <img src="{% static 'images/default-product.jpg' %}" class="card-img-top listing-card-img" alt="Default" onerror="this.src='https://placehold.co/400x300/e8590f/white?text={{ product.name|first|upper }}'">
             {% endif %}
