@@ -262,10 +262,14 @@ def create_product(request):
             product.seller = request.user
             product.save()
             # Handle multiple image uploads from form
-            images = form.cleaned_data.get('images')
+            images = form.cleaned_data.get('images', [])
             if images:
-                for image in images:
-                    ProductImage.objects.create(product=product, image=image)
+                for idx, image in enumerate(images):
+                    ProductImage.objects.create(
+                        product=product,
+                        image=image,
+                        is_primary=(idx == 0)  # First image is primary
+                    )
             messages.success(request, 'Product created successfully!')
             return redirect('product_detail', pk=product.pk)
     else:
@@ -284,10 +288,14 @@ def edit_product(request, pk):
         if form.is_valid():
             form.save()
             # Handle multiple image uploads from form
-            images = form.cleaned_data.get('images')
+            images = form.cleaned_data.get('images', [])
             if images:
                 for img in images:
-                    ProductImage.objects.create(product=product, image=img)
+                    ProductImage.objects.create(
+                        product=product,
+                        image=img,
+                        is_primary=False
+                    )
             messages.success(request, 'Product updated successfully!')
             return redirect('product_detail', pk=product.pk)
     else:

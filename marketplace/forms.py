@@ -62,6 +62,10 @@ class ProductForm(forms.ModelForm):
             'stock': forms.NumberInput(attrs={'min': '0'}),
         }
 
+    def clean_images(self):
+        """Return the list of uploaded images"""
+        return self.cleaned_data.get('images', [])
+
 
 class CartAddProductForm(forms.Form):
     quantity = forms.IntegerField(

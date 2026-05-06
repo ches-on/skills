@@ -155,7 +155,7 @@ def service_list(request):
         'page_obj': page_obj,
         'search_query': search_query,
         'category_filter': category_filter,
-        'categories': CATEGORY_CHOICES,
+        'categories': Listing.CATEGORY_CHOICES,
     }
     return render(request, 'adminpanel/services.html', context)
 
@@ -310,7 +310,7 @@ def category_list(request):
 
     context = {
         'product_categories': product_categories,
-        'service_categories': CATEGORY_CHOICES,
+        'service_categories': Listing.CATEGORY_CHOICES,
         'search_query': search_query,
     }
     return render(request, 'adminpanel/categories.html', context)
