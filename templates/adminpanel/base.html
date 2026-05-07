@@ -90,10 +90,13 @@
                                 <i class="fa-solid fa-arrow-left"></i> Back to Site
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">
-                                <i class="fa-solid fa-right-from-bracket"></i> Logout
-                            </a>
+                        <li>
+                            <form method="post" action="{% url 'logout' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                                </button>
+                            </form>
                         </li>
                     </ul>
                 </div>
