@@ -20,9 +20,12 @@
             <div class="col-md-4">
                 <select name="category" class="form-select">
                     <option value="">All Categories</option>
-                    {% for cat_code, cat_name in categories %}
-                        <option value="{{ cat_code }}" {% if category_filter == cat_code %}selected{% endif %}>{{ cat_name }}</option>
-                    {% endfor %}
+                      {% for cat in categories %}
+                        <option value="{{ cat }}"
+                          {% if category_filter == cat %}selected{% endif %}>
+                            {{ cat }}
+                        </option>
+                      {% endfor %}
                 </select>
             </div>
             <div class="col-md-2">
