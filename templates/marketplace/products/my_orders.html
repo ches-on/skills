@@ -22,7 +22,7 @@
                     ">{{ order.get_status_display }}</span>
                 </div>
                 <hr>
-                <p class="fw-bold fs-4 text-primary mb-2">${{ order.total_price }}</p>
+                <p class="fw-bold fs-4 text-primary mb-2">Ksh {{ order.total_price }}</p>
                 <p class="text-muted small mb-2">{{ order.items.count }} item{{ order.items.count|pluralize }}</p>
                 <a href="{% url 'order_detail' order.pk %}" class="btn btn-sm btn-outline-primary">View Details</a>
             </div>

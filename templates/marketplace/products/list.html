@@ -54,7 +54,7 @@
                 <h5 class="card-title">{{ product.name }}</h5>
                 <p class="text-muted small">{{ product.category.name }}</p>
                 <p class="card-text">{{ product.description|truncatewords:15 }}</p>
-                <p class="fw-bold text-primary fs-4">${{ product.price }}</p>
+                <p class="fw-bold text-primary fs-4">Ksh {{ product.price }}</p>
                 {% if product.stock > 0 %}
                     <span class="badge bg-success">In Stock ({{ product.stock }})</span>
                 {% else %}

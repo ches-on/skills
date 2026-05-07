@@ -52,7 +52,7 @@
                     <tr>
                         <td><strong>#{{ order.id }}</strong></td>
                         <td>{{ order.user.username }}</td>
-                        <td>${{ order.total_price }}</td>
+                        <td>Ksh {{ order.total_price }}</td>
                         <td>
                             <span class="badge
                                 {% if order.status == 'pending' %}bg-warning

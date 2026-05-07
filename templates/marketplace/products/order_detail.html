@@ -31,7 +31,7 @@
                         </div>
                     </div>
                     <div>
-                        {{ item.quantity }} x ${{ item.price }} = <strong>${{ item.total_price }}</strong>
+                        {{ item.quantity }} x Ksh {{ item.price }} = <strong>Ksh {{ item.total_price }}</strong>
                     </div>
                 </div>
                 {% if not forloop.last %}<hr>{% endif %}
@@ -61,7 +61,7 @@
                 <hr>
                 <div class="d-flex justify-content-between mb-3">
                     <strong>Total Price:</strong>
-                    <strong class="text-primary fs-4">${{ order.total_price }}</strong>
+                    <strong class="text-primary fs-4">Ksh {{ order.total_price }}</strong>
                 </div>
             </div>
         </div>
