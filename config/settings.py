@@ -19,6 +19,7 @@ ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     "https://skillsmkt.up.railway.app",
+    "https://kilificonnect.up.railway.app",
 ]
 
 # Application definition
